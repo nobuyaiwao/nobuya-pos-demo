@@ -9,24 +9,14 @@
 <body class="bg-gray-100 p-10">
     <div class="bg-blue-500 text-white p-4 rounded-lg mb-6">
         <h1 class="text-2xl font-bold">Adyen POS Application Demo</h1>
+        <p class="text-lg">Your Adyen Env: <span id="adyenEnv" class="text-lime-300">Loading...</span></p>
+        <p class="text-lg">Your Merchant Account: <span id="merchantAccount" class="text-lime-300">Loading...</span></p>
+        <p class="text-lg">Your Store Reference: <span id="storeReference" class="text-lime-300">Loading...</span></p>
+    
+        <!--p class="text-lg">Your Adyen Env: <span id="adyenEnv">Loading...</span></p>
         <p class="text-lg">Your Merchant Account: <span id="merchantAccount">Loading...</span></p>
-        <p class="text-lg">Your Store Reference: <span id="storeReference">Loading...</span></p>
+        <p class="text-lg">Your Store Reference: <span id="storeReference">Loading...</span></p-->
     </div>
-    
-    <script>
-        async function fetchEnvData() {
-            try {
-                const response = await fetch("/api/getenv");
-                const data = await response.json();
-                document.getElementById("merchantAccount").textContent = data.merchantAccount;
-                document.getElementById("storeReference").textContent = data.storeReference;
-            } catch (error) {
-                console.error("Error fetching environment data:", error);
-            }
-        }
-    
-        fetchEnvData();
-    </script>
 
     <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
@@ -80,33 +70,6 @@
         </button>
     </div>
 
-    <script>
-        async function fetchTerminals() {
-            try {
-                const response = await fetch("/api/terminals");
-                const terminals = await response.json();
-                
-                const terminalSelect = document.getElementById("terminal");
-                terminalSelect.innerHTML = ""; // Clear existing options
-
-                if (terminals.length === 0) {
-                    terminalSelect.innerHTML = "<option>No terminals available</option>";
-                    return;
-                }
-
-                terminals.forEach(terminal => {
-                    const option = document.createElement("option");
-                    option.value = terminal.serialNumber;
-                    option.textContent = `${terminal.name} (${terminal.serialNumber})`;
-                    terminalSelect.appendChild(option);
-                });
-            } catch (error) {
-                console.error("Error fetching terminals:", error);
-                document.getElementById("terminal").innerHTML = "<option>Error loading terminals</option>";
-            }
-        }
-
-        fetchTerminals();
-    </script>
+    <script src="util.js"></script>
 </body>
 </html>
