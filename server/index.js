@@ -59,7 +59,7 @@ async function getTerminals(storeId) {
         });
         console.log("Request Params:", {
             merchantAccount: ADYEN_MERCHANT_ACCOUNT,
-            store: storeId
+            storeIds: storeId
         });
 
         const response = await axios.get("https://management-live.adyen.com/v3/terminals", {
@@ -68,14 +68,15 @@ async function getTerminals(storeId) {
                 "Content-Type": "application/json"
             },
             params: {
-                merchantAccount: ADYEN_MERCHANT_ACCOUNT,
-                store: storeId
+                //merchantAccount: ADYEN_MERCHANT_ACCOUNT,
+                storeIds: storeId,
+                pageSize:100
             }
         });
 
         console.log("Terminals fetched:", response.data.data.length);
         return response.data.data.map(terminal => ({
-            name: terminal.deviceModel,
+            name: terminal.model,
             serialNumber: terminal.serialNumber
         }));
     } catch (error) {
@@ -83,6 +84,14 @@ async function getTerminals(storeId) {
         return [];
     }
 }
+
+// API to expose Merchant Account and Store Reference
+app.get("/api/getenv", (req, res) => {
+    res.json({
+        merchantAccount: ADYEN_MERCHANT_ACCOUNT,
+        storeReference: ADYEN_STORE_REFERENCE
+    });
+});
 
 /**
  * API for frontend: List Terminals
