@@ -1,39 +1,112 @@
-async function processPayment() {
+//async function processPayment() {
+//    const terminalSelect = document.getElementById("terminal");
+//    const selectedTerminal = terminalSelect.value;
+//    if (!selectedTerminal) {
+//        alert("Please select a payment terminal.");
+//        return;
+//    }
+//
+//    const paymentData = {
+//        amount: 180000,  // Set total price here
+//        currency: "JPY",
+//        terminalId: selectedTerminal
+//    };
+//
+//    try {
+//        const response = await fetch("/api/payments", {
+//            method: "POST",
+//            headers: {
+//                "Content-Type": "application/json"
+//            },
+//            body: JSON.stringify(paymentData) // Ensure the body is sent as JSON
+//        });
+//
+//        const result = await response.json();
+//        console.log("Payment Response:", result);
+//
+//        if (response.ok) {
+//            alert("Payment processed successfully!");
+//        } else {
+//            alert("Payment failed: " + result.error);
+//        }
+//    } catch (error) {
+//        console.error("Error processing payment:", error);
+//        alert("Error processing payment.");
+//    }
+//}
+//
+//document.getElementById("pay-button").addEventListener("click", processPayment);
+
+document.getElementById("pay-button").addEventListener("click", async () => {
     const terminalSelect = document.getElementById("terminal");
     const selectedTerminal = terminalSelect.value;
-    if (!selectedTerminal) {
-        alert("Please select a payment terminal.");
+    const paymentStatusDiv = document.getElementById("payment-status");
+
+    if (!selectedTerminal || selectedTerminal === "Checking available terminals...") {
+        paymentStatusDiv.innerHTML = `<p class="text-red-500">Error: No terminal selected.</p>`;
         return;
     }
 
-    const paymentData = {
-        amount: 180000,  // Set total price here
-        currency: "JPY",
-        terminalId: selectedTerminal
-    };
+    // Show processing message
+    paymentStatusDiv.innerHTML = `<p class="text-blue-500">Processing payment...</p>`;
 
     try {
         const response = await fetch("/api/payments", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(paymentData) // Ensure the body is sent as JSON
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                amount: 180000, // Hardcoded for now
+                currency: "JPY",
+                terminalId: selectedTerminal
+            })
         });
 
-        const result = await response.json();
-        console.log("Payment Response:", result);
+        const data = await response.json();
+        console.log("Payment response:", data);
 
-        if (response.ok) {
-            alert("Payment processed successfully!");
+        if (data?.SaleToPOIResponse?.PaymentResponse) {
+            const paymentResponse = data.SaleToPOIResponse.PaymentResponse;
+            const result = paymentResponse.Response?.Result || "Unknown";
+
+            if (result === "Success") {
+                paymentStatusDiv.innerHTML = `<p class="text-green-500 font-bold">Payment Successful!</p>`;
+            } else {
+                paymentStatusDiv.innerHTML = `<p class="text-red-500 font-bold">Payment Failed.</p>`;
+            }
+
+            // レシート情報を表示
+            if (paymentResponse.PaymentReceipt) {
+                displayReceipts(paymentResponse.PaymentReceipt);
+            }
         } else {
-            alert("Payment failed: " + result.error);
+            paymentStatusDiv.innerHTML = `<p class="text-red-500 font-bold">Error: Invalid response.</p>`;
         }
     } catch (error) {
-        console.error("Error processing payment:", error);
-        alert("Error processing payment.");
+        console.error("Payment processing error:", error);
+        paymentStatusDiv.innerHTML = `<p class="text-red-500 font-bold">Payment Request Failed.</p>`;
     }
-}
+});
 
-document.getElementById("pay-button").addEventListener("click", processPayment);
+/**
+ * Extracts and displays formatted receipts.
+ */
+function displayReceipts(receipts) {
+    const paymentStatusDiv = document.getElementById("payment-status");
+    paymentStatusDiv.innerHTML += `<h3 class="text-xl font-bold mt-4">Receipts</h3>`;
+
+    receipts.forEach(receipt => {
+        const receiptType = receipt.DocumentQualifier === "CashierReceipt" ? "Cashier Receipt" : "Customer Receipt";
+        let formattedReceipt = `<div class="border-t border-gray-300 mt-2 pt-2">
+            <h4 class="text-lg font-semibold">${receiptType}</h4>
+            <pre class="bg-gray-100 p-2 text-sm">`;
+
+        receipt.OutputContent.OutputText.forEach(line => {
+            const text = decodeURIComponent(line.Text.replace(/name=.*?&value=/, ''));
+            formattedReceipt += text + "\n";
+        });
+
+        formattedReceipt += `</pre></div>`;
+        paymentStatusDiv.innerHTML += formattedReceipt;
+    });
+}
 

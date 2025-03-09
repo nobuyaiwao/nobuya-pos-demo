@@ -12,66 +12,73 @@
         <p class="text-lg">Your Adyen Env: <span id="adyenEnv" class="text-lime-300">Loading...</span></p>
         <p class="text-lg">Your Merchant Account: <span id="merchantAccount" class="text-lime-300">Loading...</span></p>
         <p class="text-lg">Your Store Reference: <span id="storeReference" class="text-lime-300">Loading...</span></p>
-    
-        <!--p class="text-lg">Your Adyen Env: <span id="adyenEnv">Loading...</span></p>
-        <p class="text-lg">Your Merchant Account: <span id="merchantAccount">Loading...</span></p>
-        <p class="text-lg">Your Store Reference: <span id="storeReference">Loading...</span></p-->
     </div>
 
-    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
-        
-        <!-- Order Table -->
-        <table class="w-full border-collapse border border-gray-200 mb-6 text-left">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="p-2">Product</th>
-                    <th class="p-2">Image</th>
-                    <th class="p-2">Price</th>
-                    <th class="p-2">Qty</th>
-                    <th class="p-2">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody id="order-items" class="bg-white">
-                <tr>
-                    <td class="p-2">Guitar</td>
-                    <td class="p-2"><img src="guitar.jpg" class="w-12 h-12"></td>
-                    <td class="p-2">128,000 JPY</td>
-                    <td class="p-2">1</td>
-                    <td class="p-2">128,000 JPY</td>
-                </tr>
-                <tr>
-                    <td class="p-2">Amplifier</td>
-                    <td class="p-2"><img src="amplifier.jpg" class="w-12 h-12"></td>
-                    <td class="p-2">52,000 JPY</td>
-                    <td class="p-2">1</td>
-                    <td class="p-2">52,000 JPY</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr class="bg-gray-200">
-                    <td colspan="4" class="p-2 font-bold">Total</td>
-                    <td class="p-2 font-bold">180,000 JPY</td>
-                </tr>
-            </tfoot>
-        </table>
+    <div class="flex gap-6">
+        <!-- Left Panel: Order Summary -->
+        <div class="w-3/5 bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
 
-        <!-- Terminal Selection -->
-        <div class="mb-4">
-            <label for="terminal" class="block text-lg font-semibold mb-2">Select Payment Terminal</label>
-            <select id="terminal" class="w-full p-2 border border-gray-300 rounded">
-                <option>Checking available terminals...</option>
-            </select>
+            <!-- Order Table -->
+            <table class="w-full border-collapse border border-gray-200 mb-6 text-left">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-2">Product</th>
+                        <th class="p-2">Image</th>
+                        <th class="p-2">Price</th>
+                        <th class="p-2">Qty</th>
+                        <th class="p-2">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="order-items" class="bg-white">
+                    <tr>
+                        <td class="p-2">Guitar</td>
+                        <td class="p-2"><img src="guitar.jpg" class="w-12 h-12"></td>
+                        <td class="p-2">128,000 JPY</td>
+                        <td class="p-2">1</td>
+                        <td class="p-2">128,000 JPY</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2">Amplifier</td>
+                        <td class="p-2"><img src="amplifier.jpg" class="w-12 h-12"></td>
+                        <td class="p-2">52,000 JPY</td>
+                        <td class="p-2">1</td>
+                        <td class="p-2">52,000 JPY</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-200">
+                        <td colspan="4" class="p-2 font-bold">Total</td>
+                        <td class="p-2 font-bold">180,000 JPY</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- Terminal Selection -->
+            <div class="mb-4">
+                <label for="terminal" class="block text-lg font-semibold mb-2">Select Payment Terminal</label>
+                <select id="terminal" class="w-full p-2 border border-gray-300 rounded">
+                    <option>Checking available terminals...</option>
+                </select>
+            </div>
+
+            <!-- Payment Button -->
+            <button id="pay-button" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg text-lg font-semibold hover:bg-blue-600 transition">
+                Process Payment
+            </button>
         </div>
 
-        <!-- Payment Button -->
-        <button id="pay-button" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg text-lg font-semibold hover:bg-blue-600 transition">
-            Process Payment
-        </button>
+        <!-- Right Panel: Payment Status -->
+        <div class="w-2/5 bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Payment Status</h2>
+            <div id="payment-status" class="text-gray-700 text-lg">
+                <p class="text-gray-500">Waiting for payment...</p>
+            </div>
+        </div>
     </div>
 
     <script src="util.js"></script>
     <script src="payments.js"></script>
-
 </body>
 </html>
+
