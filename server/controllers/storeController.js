@@ -1,4 +1,4 @@
-const { fetchStores } = require("../services/adyenService");
+const { fetchStores } = require("../services/management");
 const { ADYEN_STORE_REFERENCE } = require("../config");
 
 /**

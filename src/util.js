@@ -33,8 +33,9 @@ async function fetchTerminals() {
 
         terminals.forEach(terminal => {
             const option = document.createElement("option");
-            option.value = terminal.serialNumber;
-            option.textContent = `${terminal.name} (${terminal.serialNumber})`;
+            //option.value = terminal.serialNumber;
+            option.value = terminal.id;
+            option.textContent = `${terminal.model} (${terminal.serialNumber})`;
             terminalSelect.appendChild(option);
         });
     } catch (error) {

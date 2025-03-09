@@ -1,10 +1,6 @@
 const axios = require("axios");
 const { ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_BASE_URL } = require("../config");
 
-
-
-//const { ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT } = require("../config");
-
 /**
  * Fetch Store List from Adyen API
  */
@@ -26,7 +22,10 @@ async function fetchStores() {
  * Fetch Terminals from Adyen API
  */
 async function fetchTerminals(storeId) {
-    const response = await axios.get("https://management-live.adyen.com/v3/terminals", {
+    const url = `${ADYEN_BASE_URL}/terminals`;
+    console.log("Requesting terminals from:", url);
+
+    const response = await axios.get(url, {
         headers: {
             "x-api-key": ADYEN_API_KEY,
             "Content-Type": "application/json"
@@ -38,7 +37,8 @@ async function fetchTerminals(storeId) {
     });
 
     return response.data.data.map(terminal => ({
-        name: terminal.model,
+        id: terminal.id,
+        model: terminal.model,
         serialNumber: terminal.serialNumber
     }));
 }

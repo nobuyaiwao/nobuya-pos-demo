@@ -1,11 +1,11 @@
 const express = require("express");
 const { getTerminals } = require("./controllers/terminalController");
-//const { ADYEN_MERCHANT_ACCOUNT, ADYEN_STORE_REFERENCE } = require("./config");
+const { processPayment } = require("./services/payments");
 const { ADYEN_MERCHANT_ACCOUNT, ADYEN_STORE_REFERENCE, ADYEN_ENV } = require("./config");
 
 const router = express.Router();
 
-
+// Get environment details
 router.get("/api/getenv", (req, res) => {
     res.json({
         merchantAccount: ADYEN_MERCHANT_ACCOUNT,
@@ -13,14 +13,6 @@ router.get("/api/getenv", (req, res) => {
         environment: ADYEN_ENV
     });
 });
-
-//// Get environment details
-//router.get("/api/getenv", (req, res) => {
-//    res.json({
-//        merchantAccount: ADYEN_MERCHANT_ACCOUNT,
-//        storeReference: ADYEN_STORE_REFERENCE
-//    });
-//});
 
 // Get available terminals
 router.get("/api/terminals", async (req, res) => {
@@ -31,6 +23,9 @@ router.get("/api/terminals", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch terminals" });
     }
 });
+
+// Process payments
+router.post("/api/payments", processPayment);
 
 module.exports = router;
 

@@ -1,4 +1,4 @@
-const { fetchTerminals } = require("../services/adyenService");
+const { fetchTerminals } = require("../services/management");
 const { getStoreId } = require("./storeController");
 
 /**
