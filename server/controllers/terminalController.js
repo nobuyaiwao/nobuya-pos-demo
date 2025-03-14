@@ -6,6 +6,7 @@ const { getStoreId } = require("./storeController");
  */
 async function getTerminals() {
     const storeId = await getStoreId();
+    console.log("storeId : ", storeId);
     if (!storeId) {
         return [];
     }

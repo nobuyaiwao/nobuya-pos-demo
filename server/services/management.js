@@ -8,14 +8,24 @@ async function fetchStores() {
     const url = `${ADYEN_BASE_URL}/merchants/${ADYEN_MERCHANT_ACCOUNT}/stores?pageSize=100`;
     console.log("Requesting stores from:", url);
 
-    const response = await axios.get(url, {
-        headers: {
-            "x-api-key": ADYEN_API_KEY,
-            "Content-Type": "application/json"
-        }
-    });
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                "x-api-key": ADYEN_API_KEY,
+                "Content-Type": "application/json"
+            }
+        });
 
-    return response.data.data;
+        if (!response.data || !response.data.data) {
+            console.error("Unexpected response format:", response.data);
+            return [];
+        }
+
+        return response.data.data;
+    } catch (error) {
+        console.error("Error fetching stores:", error.response ? error.response.data : error.message);
+        return [];
+    }
 }
 
 /**
@@ -25,23 +35,40 @@ async function fetchTerminals(storeId) {
     const url = `${ADYEN_BASE_URL}/terminals`;
     console.log("Requesting terminals from:", url);
 
-    const response = await axios.get(url, {
-        headers: {
-            "x-api-key": ADYEN_API_KEY,
-            "Content-Type": "application/json"
-        },
-        params: {
-            merchantAccount: ADYEN_MERCHANT_ACCOUNT,
-            storeIds: storeId
-        }
-    });
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                "x-api-key": ADYEN_API_KEY,
+                "Content-Type": "application/json"
+            },
+            params: {
+                merchantAccount: ADYEN_MERCHANT_ACCOUNT,
+                storeIds: storeId
+            }
+        });
 
-    return response.data.data.map(terminal => ({
-        id: terminal.id,
-        model: terminal.model,
-        serialNumber: terminal.serialNumber
-    }));
+        console.log("Full Response:", response.data);
+
+        // レスポンスのチェック
+        if (!response.data || !Array.isArray(response.data.data)) {
+            console.error("Unexpected response format:", response.data);
+            return [];
+        }
+
+        return response.data.data.map(terminal => ({
+            id: terminal.id,
+            model: terminal.model,
+            serialNumber: terminal.serialNumber
+        }));
+
+    } catch (error) {
+        console.error("Error fetching terminals:",
+            error.response ? error.response.data : error.message);
+        return [];
+    }
 }
+
+
 
 module.exports = { fetchStores, fetchTerminals };
 
