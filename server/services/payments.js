@@ -44,7 +44,7 @@ async function processPayment(req, res) {
                 PaymentRequest: {
                     SaleData: {
                         SaleTransactionID: {
-                            TransactionID: `POS-${Date.now()}`,
+                            TransactionID: `nobuya-pos-demo-${Date.now()}`,
                             TimeStamp: new Date().toISOString()
                         }
                     },
